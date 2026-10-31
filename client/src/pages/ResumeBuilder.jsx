@@ -160,7 +160,7 @@ transition-all duration-2000'style={{width:`${activesectionindex*100/(sections.l
       <div className='flex items-center gap-2'
       ><TemplateSelector selectedTemplate={resumedata.template} onChange={(template)=>setresumedata(prev=>({...prev,template}))}/></div>
 
-<ColorPicker selectedTemplate={resumedata.accent_color} onChange={(color)=>setresumedata(prev=>({...prev, accent_color:color}))}/>
+<ColorPicker selectedColor={resumedata.accent_color} onChange={(color)=>setresumedata(prev=>({...prev, accent_color:color}))}/>
 
       <div className='flex items-center'>
         {activesectionindex !==0 &&(

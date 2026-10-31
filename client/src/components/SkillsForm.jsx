@@ -5,8 +5,9 @@ const SkillsForm = ({data,onChange}) => {
     const [newSkill,setNewSkill ]=useState("")
 
     const addSkill =()=>{
-        if(newSkill.trim()&& !data.includes(newSkill.trim())){
-            onChange([...data,newSkill.trim()])
+        const skill = newSkill.trim()
+        if(skill && !data.some(existingSkill => existingSkill.toLowerCase() === skill.toLowerCase())){
+            onChange([...data,skill])
             setNewSkill("")
         }
     }
@@ -31,14 +32,14 @@ const handleKeyPress =(e)=>{
 
 
       <div className='flex gap-2'>
-        <input type='text' placeholder='Enter a skill (e.g.,JavaScript,Python)' className='felx-1 px-3 py-2 text-sm '
+        <input type='text' placeholder='Enter a skill (e.g., JavaScript, Python)' className='flex-1 px-3 py-2 text-sm '
         onChange={(e)=>setNewSkill(e.target.value)}
         value={newSkill} 
         onKeyDown={handleKeyPress}/>
 
-<button onClick={addSkill} disabled={!newSkill.trim} className='flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg 
+<button type="button" onClick={addSkill} disabled={!newSkill.trim()} aria-label="Add skill" className='flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg
 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
-    <Plus className='Size-4'/>
+    <Plus className='size-4'/>
 
 </button>
       </div>
@@ -47,8 +48,8 @@ hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allo
         {data.map((skill, index)=>(
             <span key={index} className='flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'>
 {skill}
-<button onClick={()=>{removeSkill(index)}} className='ml-1 hover:bg-blue-200 rounded-full p-0.5 transition-colors'>
-    <X />
+<button type="button" onClick={()=>{removeSkill(index)}} aria-label={`Remove ${skill}`} className='ml-1 hover:bg-blue-200 rounded-full p-0.5 transition-colors'>
+    <X className="size-4" />
 
 </button>
             </span>

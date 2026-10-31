@@ -12,15 +12,14 @@ const Hero = () => {
             <div className="min-h-screen pb-20">
                 {/* Navbar */}
                 <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-40 text-sm">
-                    <a href="">
+                    <Link to="/" aria-label="ResumeCraft home">
                         <img src="/logo.svg" alt="logo" className='h-11 w-auto' />
                         
-                    </a>
+                    </Link>
 
                     <div className="hidden md:flex items-center gap-8 transition duration-500 text-slate-800">
-                        <a href="#" className="hover:text-purple-600 transition">Home</a>
+                        <a href="#top" className="hover:text-purple-600 transition">Home</a>
                         <a href="#features" className="hover:text-purple-600 transition">Features</a>
-                        <a href="#testimonials" className="hover:text-purple-600 transition">Testimonials</a>
                         <a href="#cta" className="hover:text-purple-600 transition">Contact</a>
                     </div>
 
@@ -36,7 +35,7 @@ const Hero = () => {
                         </Link>
                     </div>
 
-                    <button onClick={() => setMenuOpen(true)} className="md:hidden active:scale-90 transition" >
+                    <button type="button" aria-label="Open navigation menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)} className="md:hidden active:scale-90 transition" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" className="lucide lucide-menu" >
                             <path d="M4 5h16M4 12h16M4 19h16" />
                         </svg>
@@ -44,18 +43,27 @@ const Hero = () => {
                 </nav>
 
                 {/* Mobile Menu */}
-                <div className={`fixed inset-0 z-[100] bg-black/40 text-black backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-300 ${menuOpen ? "translate-x-0" : "-translate-x-full"}`} >
-                    <a href="#" className="text-white">Home</a>
-                    <a  href="#features" className="text-white">Features</a>
-                    <a href="#testimonials"  className="text-white">Testimonials</a>
-                    <a href="#cta" className="text-white">Contact</a>
-                    <button onClick={() => setMenuOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-purple-600 hover:bg-purple-700 transition text-white rounded-md flex" >
-                        X
-                    </button>
-                </div>
+                {menuOpen && (
+                    <div className="fixed inset-0 z-[100] bg-slate-950/90 text-white backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden">
+                        <button type="button" aria-label="Close navigation menu" onClick={() => setMenuOpen(false)} className="absolute right-6 top-6 rounded-full border border-white/30 px-3 py-1 text-sm">
+                            Close
+                        </button>
+                        <a href="#top" onClick={() => setMenuOpen(false)}>Home</a>
+                        <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
+                        <a href="#cta" onClick={() => setMenuOpen(false)}>Contact</a>
+                        {user ? (
+                            <Link to="/app" onClick={() => setMenuOpen(false)} className="rounded-full bg-purple-600 px-6 py-3">Dashboard</Link>
+                        ) : (
+                            <>
+                                <Link to="/app?state=register" onClick={() => setMenuOpen(false)} className="rounded-full bg-purple-600 px-6 py-3">Get started</Link>
+                                <Link to="/app?state=login" onClick={() => setMenuOpen(false)} className="rounded-full border border-white/50 px-6 py-3">Login</Link>
+                            </>
+                        )}
+                    </div>
+                )}
 
                 {/* Hero Section */}
-                <div className="relative flex flex-col items-center justify-center text-sm px-4 md:px-16 lg:px-24 xl:px-40 text-black">
+                <div id="top" className="relative flex flex-col items-center justify-center text-sm px-4 md:px-16 lg:px-24 xl:px-40 text-black">
                     <div className="absolute top-28 xl:top-10 -z-10 left-1/4 size-72 sm:size-96 xl:size-120 2xl:size-132 bg-purple-300 blur-[100px] opacity-30"></div>
 
                    
