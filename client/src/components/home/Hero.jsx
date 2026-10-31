@@ -7,14 +7,6 @@ const Hero = () => {
     const {user} = useSelector(state=>state.auth)
     const [menuOpen, setMenuOpen] = React.useState(false);
 
-    const logos = [
-        'https://saasly.prebuiltui.com/assets/companies-logo/instagram.svg',
-        'https://saasly.prebuiltui.com/assets/companies-logo/framer.svg',
-        'https://saasly.prebuiltui.com/assets/companies-logo/microsoft.svg',
-        'https://saasly.prebuiltui.com/assets/companies-logo/huawei.svg',
-        'https://saasly.prebuiltui.com/assets/companies-logo/walmart.svg',
-    ]
-
     return (
         <>
             <div className="min-h-screen pb-20">
@@ -103,4 +95,3 @@ const Hero = () => {
 }
 
 export default Hero
-

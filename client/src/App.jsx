@@ -5,7 +5,7 @@ import  Layout  from './pages/Layout'
 import Dashboard from './pages/Dashboard'
 import ResumeBuilder from './pages/ResumeBuilder'
 import Preview  from'./pages/Preview'
-import { login, setLoading } from './app/features/authSlice'
+import { login, logout, setLoading } from './app/features/authSlice'
 import { useDispatch } from 'react-redux'
 import api from './configs/api'
 import {Toaster} from 'react-hot-toast'
@@ -17,30 +17,44 @@ import {Toaster} from 'react-hot-toast'
 const App= ()=> {
 
 const dispatch = useDispatch();
-const getUserData = async()=>{
-  const token = localStorage.getItem('token')
-  try {
-    if(token){
-      const {data} = await api.get('/api/users/data',{headers:{Authorization:token}})
-    
-    if(data.user){
-      dispatch(login({token,user :data.user}))
-}
-dispatch(setLoading(false))
-    }else{
-      dispatch(setLoading(false))
-    }
-  } 
-  
-  catch (error) {
-    dispatch(setLoading(false))
-    console.log(error.message)
+useEffect(() => {
+  let isMounted = true;
 
-  }
-}
-useEffect(()=>{
-  getUserData();
-},[]);
+  const getUserData = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      dispatch(setLoading(false));
+      return;
+    }
+
+    try {
+      const { data } = await api.get('/api/users/data', {
+        headers: { Authorization: token },
+      });
+
+      if (isMounted && data.user) {
+        dispatch(login({ token, user: data.user }));
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        dispatch(logout());
+      } else {
+        console.error('Unable to load user data:', error.message);
+      }
+    } finally {
+      if (isMounted) {
+        dispatch(setLoading(false));
+      }
+    }
+  };
+
+  void getUserData();
+
+  return () => {
+    isMounted = false;
+  };
+}, [dispatch]);
 
   return (
     <>

@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { dummyResumeData } from '../assets/assets'
 import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User } from 'lucide-react'
 import PersonallnFrom from '../components/PersonallnFrom'
 import ResumePreview from '../components/ResumePreview'
@@ -83,25 +82,31 @@ const sections =[
 
 const activesection =sections[activesectionindex]
 
-const loadexistingresume = async ()=>{
-  try {
-    
-    const {data}=await api.get('/api/resume/get/' + resumeId,{headers:{
-      Authorization: token }})
-      if(data.resume){
-        setresumedata(data.resume)
+useEffect(() => {
+  let isMounted = true;
+
+  const loadExistingResume = async () => {
+    try {
+      const { data } = await api.get('/api/resume/get/' + resumeId, {
+        headers: { Authorization: token },
+      });
+      if (isMounted && data.resume) {
+        setresumedata(data.resume);
         document.title = data.resume.title;
-      } 
-  } catch (error) {
-    console.log(error.message)
-  }
+      }
+    } catch (error) {
+      if (isMounted) {
+        toast.error(error?.response?.data?.message || error.message);
+      }
+    }
+  };
 
-}
+  void loadExistingResume();
 
-useEffect(()=>{
-
-  loadexistingresume()
-},[ ])
+  return () => {
+    isMounted = false;
+  };
+}, [resumeId, token]);
 
 const saveResume =async()=>{
 try {
@@ -287,4 +292,3 @@ Share
 }
 
 export default ResumeBuilder
-

@@ -1,6 +1,5 @@
 import { FilePenLineIcon, LoaderCircleIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCloudIcon, XIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import { dummyResumeData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
@@ -21,22 +20,6 @@ const [isLoading , setIsLoading]= useState(false)
    const[resume ,setresume]=useState(null)
     const[editresumeid ,seteditresumeid]=useState('')
 const navigate= useNavigate()
-
-
-  
-  const loadAllResumes=async()=>{
-    try {
-      const {data}= await api.get('/api/users/resumes', {headers:{
-        Authorization: token }})
-        setAllResumes(data.resumes)
-      
-    } catch (error) {
-      toast.error(error?.response?.data?.message||error.message )
-    } }
-
-
-
-
 
 
     const createresume=async(event)=>{
@@ -103,7 +86,7 @@ const {data}= await api.post('/api/ai/upload-resume', {title,resumeText} ,{heade
       try {
         const confirm =window.confirm('Are you sure you want to delete this resume?')
       if(confirm){
-        const{data} = await api.delete(`/api/resume/delete/${resumeid} `,{headers:{
+        const{data} = await api.delete(`/api/resume/delete/${resumeid}`,{headers:{
         Authorization: token }})
         setAllResumes(allResumes.filter(resume=>resume._id !== resumeid))
         toast.success(data.message)
@@ -116,9 +99,30 @@ const {data}= await api.post('/api/ai/upload-resume', {title,resumeText} ,{heade
 
     }
 
-    useEffect(()=>{
-      loadAllResumes()
-    },[])
+    useEffect(() => {
+      let isMounted = true;
+
+      const loadAllResumes = async () => {
+        try {
+          const { data } = await api.get('/api/users/resumes', {
+            headers: { Authorization: token },
+          });
+          if (isMounted) {
+            setAllResumes(data.resumes);
+          }
+        } catch (error) {
+          if (isMounted) {
+            toast.error(error?.response?.data?.message || error.message);
+          }
+        }
+      };
+
+      void loadAllResumes();
+
+      return () => {
+        isMounted = false;
+      };
+    }, [token]);
 
 
 
@@ -126,7 +130,7 @@ const {data}= await api.post('/api/ai/upload-resume', {title,resumeText} ,{heade
     <div>
      <div className='max-w-7xl  mx-auto px-4 py-8'>
       <p className='text-2xl  font-medium mb-6 bg-gradient-to-r from-slate-600 to-slate-700
-      bg-clip-text text-transparent sm:hidden'>Welcome ,Joe Doe</p>
+      bg-clip-text text-transparent sm:hidden'>Welcome, {user?.name || 'there'}</p>
       <div className='flex gap-4'>
         
         <button onClick={()=>setshowcreateresume(true)} className='w-full bg-white sm:max-w-36 h-48 flex flex-col items-center
